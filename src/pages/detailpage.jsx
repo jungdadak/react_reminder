@@ -1,24 +1,44 @@
 import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useState } from 'react';
+
 export default function Detailpage({ shoes }) {
-  useEffect(() => {
-    setTimeout(() => {
-      setAlert(false);
-    }, 2000);
-    let shoe = shoes.find((x) => {
-      return x.id === Number(id);
-    });
+  let [count, setCount] = useState(0);
+  let [stockAlert, setStockAlert] = useState(true);
+  let { id } = useParams();
+  let shoe = shoes.find((x) => {
+    return x.id === Number(id);
   });
 
-  let [count, setCount] = useState(0);
-  let [alert, setAlert] = useState(true);
-  let { id } = useParams();
+  const [input, setInput] = useState('');
+  const [showWarning, setShowWarning] = useState(false); // 경고 메시지 표시 상태 추가
+
+  useEffect(() => {
+    let a = setTimeout(() => {
+      setStockAlert(false);
+    }, 2000);
+    console.log(2);
+    return () => {
+      console.log(1);
+      clearTimeout(a);
+    };
+  }, [count]);
+
+  // input 값 검사를 위한 useEffect
+  useEffect(() => {
+    if (input !== '') {
+      setShowWarning(isNaN(input));
+    }
+  }, [input]);
+
+  const handleInputChange = (e) => {
+    setInput(e.target.value);
+  };
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-12">
-      {alert === true ? (
-        <div className="flex items-center justify-center bg-yellow-200 h-14 text-center  text-black ">
+      {stockAlert === true ? (
+        <div className="flex items-center justify-center bg-yellow-200 h-14 text-center text-black">
           재고가 얼마 남지 않았습니다.
         </div>
       ) : null}
@@ -33,13 +53,6 @@ export default function Detailpage({ shoes }) {
             alt="상품 이미지"
           />
         </div>
-        <button
-          onClick={() => {
-            setCount(count + 1);
-          }}
-        >
-          {count}
-        </button>
 
         {/* 상품 정보 섹션 */}
         <div className="space-y-6 p-4">
@@ -53,6 +66,25 @@ export default function Detailpage({ shoes }) {
             </span>
             <span className="text-sm text-green-600">무료배송</span>
           </div>
+
+          <div
+            className={`w-full h-10 flex justify-center items-center
+            ${
+              !showWarning
+                ? 'invisible'
+                : 'bg-red-200 rounded-md text-red-600 font-semibold'
+            }`}
+          >
+            수량은 숫자로만 입력해 주세요 !!
+          </div>
+
+          <input
+            value={input}
+            onChange={handleInputChange}
+            placeholder="수량을 입력해 주세요"
+            className="placeholder-gray-500 placeholder-text-sm text-sm text-center text-black
+              w-full p-1 rounded-md bg-white border-2 border-blue-300"
+          />
           <button className="w-full bg-red-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-red-700 transition-colors duration-200 shadow-lg hover:shadow-xl">
             주문하기
           </button>
