@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 export default function Mainpage({ shoes }) {
   return (
     <>
@@ -26,11 +28,13 @@ export default function Mainpage({ shoes }) {
                   {a.title}
                 </div>
                 <div className="p-4">
-                  <img
-                    alt="{a.title}"
-                    className="w-full h-auto object-cover"
-                    src={a.img}
-                  />
+                  <Link to={`/detail/${a.id}`}>
+                    <img
+                      alt="{a.title}"
+                      className="w-full h-auto object-cover"
+                      src={a.img}
+                    />
+                  </Link>
                   <h4 className="text-xl text-black font-semibold mt-4 mb-2">
                     {a.content}
                   </h4>
